@@ -1,2 +1,3 @@
-class ApplicationController < ActionController::API
+# Base controller for JSONAPI controllers
+class ApplicationController < JSONAPI::ResourceController
 end
