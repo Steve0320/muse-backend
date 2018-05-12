@@ -1,11 +1,22 @@
 Rails.application.routes.draw do
 
-  # Movie routes
-  jsonapi_resources :movies
+  # API-specific routes
+  scope :api do
 
-  # TV routes
-  jsonapi_resources :shows
-  jsonapi_resources :seasons
-  jsonapi_resources :episodes
+    # Movie routes
+    scope :film do
+      resources :movies
+    end
+
+    # TV routes
+    scope :tv do
+      resources :shows do
+        resources :seasons
+      end
+      resources :seasons
+      resources :episodes
+    end
+
+  end
 
 end

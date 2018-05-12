@@ -12,7 +12,7 @@ class MoviesControllerTest < ActionDispatch::IntegrationTest
 
   test "should create movie" do
     assert_difference('Movie.count') do
-      post movies_url, params: { movie: { description: @movie.description, imdb: @movie.imdb, title: @movie.title } }, as: :json
+      post movies_url, params: { movie: {  } }, as: :json
     end
 
     assert_response 201
@@ -24,7 +24,7 @@ class MoviesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should update movie" do
-    patch movie_url(@movie), params: { movie: { description: @movie.description, imdb: @movie.imdb, title: @movie.title } }, as: :json
+    patch movie_url(@movie), params: { movie: {  } }, as: :json
     assert_response 200
   end
 
