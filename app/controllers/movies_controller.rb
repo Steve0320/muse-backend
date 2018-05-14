@@ -2,18 +2,18 @@ class MoviesController < ApplicationController
 
   before_action :set_movie, only: %i[show update destroy]
 
-  # GET /movies
+  # GET /film/movies
   def index
     @movies = Movie.all
     render json: { movies: @movies }
   end
 
-  # GET /movies/1
+  # GET /film/movies/1
   def show
     render json: { movies: @movie }
   end
 
-  # POST /movies
+  # POST /film/movies
   def create
 
     @movie = Movie.new(movie_params)
@@ -26,7 +26,7 @@ class MoviesController < ApplicationController
 
   end
 
-  # PATCH/PUT /movies/1
+  # PATCH/PUT /film/movies/1
   def update
 
     if @movie.update(movie_params)
@@ -37,9 +37,14 @@ class MoviesController < ApplicationController
 
   end
 
-  # DELETE /movies/1
+  # DELETE /film/movies/1
   def destroy
     @movie.destroy
+  end
+
+  # GET /film/search
+  def search
+    render json: { movies: Movie.search(search_params) }
   end
 
   private
@@ -52,6 +57,10 @@ class MoviesController < ApplicationController
   # Only allow a trusted parameter "white list" through.
   def movie_params
     params.fetch(:movie, {})
+  end
+
+  def search_params
+    params.permit(:q)
   end
 
 end
