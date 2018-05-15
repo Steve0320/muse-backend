@@ -6,6 +6,7 @@
       <w>cors</w>
       <w>jbuilder</w>
       <w>jsonapi</w>
+      <w>tmdb</w>
     </words>
   </dictionary>
 </component>

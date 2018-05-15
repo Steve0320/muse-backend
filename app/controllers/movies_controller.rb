@@ -16,7 +16,12 @@ class MoviesController < ApplicationController
   # POST /film/movies
   def create
 
-    @movie = Movie.new(movie_params)
+    # Default to loading from TMDb, but permit manual insertion
+    @movie = if params[:tmdb_id].present?
+               Movie.tmdb_lookup(params[:tmdb_id])
+             else
+               Movie.new(movie_params)
+             end
 
     if @movie.save
       render json: @movie, status: :created, location: @movie
@@ -42,11 +47,6 @@ class MoviesController < ApplicationController
     @movie.destroy
   end
 
-  # GET /film/search
-  def search
-    render json: { movies: Movie.search(search_params) }
-  end
-
   private
 
   # Use callbacks to share common setup or constraints between actions.
@@ -56,11 +56,10 @@ class MoviesController < ApplicationController
 
   # Only allow a trusted parameter "white list" through.
   def movie_params
-    params.fetch(:movie, {})
-  end
-
-  def search_params
-    params.permit(:q)
+    params.require(:movie).permit(:backdrop_url, :homepage, :tmdb_id, :imdb_id,
+                                  :original_language, :original_title, :description,
+                                  :popularity, :poster_url, :release_date, :runtime,
+                                  :status, :tagline, :title)
   end
 
 end

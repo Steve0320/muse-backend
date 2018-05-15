@@ -21,14 +21,24 @@ ActiveRecord::Schema.define(version: 20180510215424) do
   end
 
   create_table "movies", force: :cascade do |t|
-    t.string "title", null: false
+    t.string "backdrop_path"
+    t.string "homepage"
+    t.string "tmdb_id", null: false
+    t.string "imdb_id", null: false
+    t.string "original_language"
+    t.string "original_title"
     t.string "description"
-    t.string "imdb_id"
-    t.string "imdb_link"
-    t.string "cover_url"
+    t.float "popularity"
+    t.string "poster_path"
+    t.date "release_date"
+    t.integer "runtime"
+    t.string "status"
+    t.string "tagline"
+    t.string "title", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["imdb_id"], name: "index_movies_on_imdb_id", unique: true
+    t.index ["tmdb_id"], name: "index_movies_on_tmdb_id", unique: true
   end
 
   create_table "seasons", force: :cascade do |t|
