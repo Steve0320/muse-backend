@@ -13,7 +13,7 @@ class Movie < ApplicationRecord
     'https://image.tmdb.org/t/p/w500' + read_attribute(:backdrop_path)
   end
 
-  # Find a movie record in TMDB by id
+  # Find a movie record in TMDb by id
   def self.tmdb_lookup(id)
 
     # If result already exists in database, load from there

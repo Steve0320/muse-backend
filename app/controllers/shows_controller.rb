@@ -14,9 +14,14 @@ class ShowsController < ApplicationController
   end
 
   # POST /shows
+  # TODO: Finish implementation
   def create
 
-    @show = Show.new(show_params)
+    @show = if params[:tmdb_id].present?
+              Show.tmdb_lookup(params[:tmdb_id])
+            else
+              Show.new(show_params)
+            end
 
     if @show.save
       render json: @show, status: :created, location: @show
@@ -52,7 +57,10 @@ class ShowsController < ApplicationController
 
   # Only allow a trusted parameter "white list" through.
   def show_params
-    params.fetch(:show, {})
+    params.require(:show).permit(:backdrop_path, :homepage, :tmdb_id,
+                                 :original_language, :original_title,
+                                 :description, :popularity, :poster_path,
+                                 :release_date, :runtime, :status, :title)
   end
 
 end

@@ -13,7 +13,12 @@
 ActiveRecord::Schema.define(version: 20180510215424) do
 
   create_table "episodes", force: :cascade do |t|
-    t.integer "episode_number", null: false
+    t.date "release_date"
+    t.integer "number", null: false
+    t.string "title", null: false
+    t.string "description"
+    t.string "production_code"
+    t.string "poster_path"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "season_id"
@@ -42,7 +47,11 @@ ActiveRecord::Schema.define(version: 20180510215424) do
   end
 
   create_table "seasons", force: :cascade do |t|
-    t.integer "season_number", null: false
+    t.date "release_date"
+    t.string "title"
+    t.string "description"
+    t.string "poster_path"
+    t.integer "number", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "show_id"
@@ -50,14 +59,19 @@ ActiveRecord::Schema.define(version: 20180510215424) do
   end
 
   create_table "shows", force: :cascade do |t|
-    t.string "title", null: false
+    t.string "backdrop_path"
+    t.string "homepage"
+    t.string "tmdb_id", null: false
+    t.string "original_language"
+    t.string "original_title"
     t.string "description"
-    t.string "tvdb_id"
-    t.string "tvdb_link"
-    t.string "cover_url"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["tvdb_id"], name: "index_shows_on_tvdb_id", unique: true
+    t.float "popularity"
+    t.string "poster_path"
+    t.date "release_date"
+    t.integer "runtime"
+    t.string "status"
+    t.string "title", null: false
+    t.index ["tmdb_id"], name: "index_shows_on_tmdb_id", unique: true
   end
 
 end

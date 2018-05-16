@@ -17,6 +17,7 @@ Rails.application.routes.draw do
       end
       resources :seasons
       resources :episodes
+      get 'search', to: 'tmdb_searches#tv_search', as: 'tv_search'
     end
 
   end

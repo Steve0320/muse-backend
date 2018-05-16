@@ -2,27 +2,43 @@ class CreateShows < ActiveRecord::Migration[5.1]
   def change
 
     create_table :shows do |t|
-      t.string :title, null: false
+      t.string :backdrop_path
+      t.string :homepage
+      t.string :tmdb_id, null: false
+      t.string :original_language
+      t.string :original_title
       t.string :description
-      t.string :tvdb_id
-      t.string :tvdb_link
-      t.string :cover_url
-      t.timestamps
+      t.float :popularity
+      t.string :poster_path
+      t.date :release_date
+      t.integer :runtime
+      t.string :status
+      t.string :title, null: false
     end
 
-    add_index :shows, :tvdb_id, unique: true
+    # Require TMDb ID to be unique
+    add_index :shows, :tmdb_id, unique: true
 
     create_table :seasons do |t|
-      t.integer :season_number, null: false
+      t.date :release_date
+      t.string :title
+      t.string :description
+      t.string :poster_path
+      t.integer :number, null: false
       t.timestamps
     end
 
     create_table :episodes do |t|
-      t.integer :episode_number, null: false
+      t.date :release_date
+      t.integer :number, null: false
+      t.string :title, null: false
+      t.string :description
+      t.string :production_code
+      t.string :poster_path
       t.timestamps
     end
 
-    # Show has many seasons and episodes
+    # Show has many seasons
     add_reference :seasons, :show, foreign_key: true
 
     # Season has many episodes
