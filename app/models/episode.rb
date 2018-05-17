@@ -2,7 +2,6 @@ class Episode < ApplicationRecord
 
   validates :number, :title, presence: true
 
-  belongs_to :show
   belongs_to :season
 
   def self.unmarshal_tmdb(json)

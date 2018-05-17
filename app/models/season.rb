@@ -3,7 +3,7 @@ class Season < ApplicationRecord
   validates :number, presence: true
 
   belongs_to :show
-  has_many :episodes
+  has_many :episodes, dependent: :destroy
 
   def self.unmarshal_tmdb(json)
 

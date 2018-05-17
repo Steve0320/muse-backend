@@ -17,11 +17,11 @@ class ShowsController < ApplicationController
   # TODO: Finish implementation
   def create
 
-    @show = if params[:tmdb_id].present?
-              Show.tmdb_lookup(params[:tmdb_id])
-            else
-              Show.new(show_params)
-            end
+    #@show = if params[:tmdb_id].present?
+    #          Show.tmdb_lookup(params[:tmdb_id])
+    #        else
+    #          Show.new(show_params)
+    #        end
 
     if @show.save
       render json: @show, status: :created, location: @show

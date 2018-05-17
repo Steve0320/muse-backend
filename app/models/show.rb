@@ -2,11 +2,10 @@ class Show < ApplicationRecord
 
   require 'faraday'
 
-  validates :title, :description, :tmdb_id, :imdb_id, presence: true
-  validates :tmdb_id, :imdb_id, uniqueness: true
+  validates :title, :description, :tmdb_id, presence: true
+  validates :tmdb_id, uniqueness: true
 
-  has_many :seasons
-  has_many :episodes
+  has_many :seasons, dependent: :destroy
 
   def poster_path
     'https://image.tmdb.org/t/p/w500' + read_attribute(:poster_path)
@@ -17,6 +16,8 @@ class Show < ApplicationRecord
   end
 
   # Find a tv show (with seasons and episodes) in TMDb
+  # Number of api requests = 1 + ceil(seasons/20)
+  # Should run in O(n) where n = total number of episodes
   def self.tmdb_lookup(id)
 
     # Load show info from TMDb
@@ -27,16 +28,16 @@ class Show < ApplicationRecord
     end
 
     show = JSON.parse(response.body)
+    show_obj = Show.unmarshal_tmdb(show)
 
     # Use append_to_response to reduce API queries
     season_appends = []
 
+    # Figure out append links
     show['seasons'].each do |season|
       season_number = season['season_number']
       season_appends << "season/#{season_number}"
     end
-
-    show['seasons'] = []
 
     # Respect TMDb's limit of 20 appends per request
     season_appends.each_slice(20) do |batch|
@@ -50,13 +51,20 @@ class Show < ApplicationRecord
 
       json = JSON.parse(response.body)
 
-      batch.each do |result|
-        show['seasons'] << json[result]
+      batch.each do |season_key|
+
+        season_obj = Season.unmarshal_tmdb(json[season_key])
+        show_obj.seasons << season_obj
+
+        json[season_key]['episodes'].each do |episode|
+          season_obj.episodes << Episode.unmarshal_tmdb(episode)
+        end
+
       end
 
     end
 
-    return show
+    return show_obj
 
   end
 
@@ -72,7 +80,7 @@ class Show < ApplicationRecord
       popularity: json['popularity'],
       poster_path: json['poster_path'],
       release_date: json['first_air_date'],
-      runtime: json['episode_run_time'],
+      runtime: json['episode_run_time'][0],
       status: json['status'],
       title: json['name']
     )
