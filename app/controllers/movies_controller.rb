@@ -2,18 +2,18 @@ class MoviesController < ApplicationController
 
   before_action :set_movie, only: %i[show update destroy]
 
-  # GET /film/movies
+  # GET /api/film/movies
   def index
     @movies = Movie.all
     render json: { movies: @movies }
   end
 
-  # GET /film/movies/1
+  # GET /api/film/movies/1
   def show
     render json: { movies: @movie }
   end
 
-  # POST /film/movies
+  # POST /api/film/movies
   def create
 
     # Default to loading from TMDb, but permit manual insertion
@@ -31,7 +31,7 @@ class MoviesController < ApplicationController
 
   end
 
-  # PATCH/PUT /film/movies/1
+  # PATCH/PUT /api/film/movies/1
   def update
 
     if @movie.update(movie_params)
@@ -42,7 +42,7 @@ class MoviesController < ApplicationController
 
   end
 
-  # DELETE /film/movies/1
+  # DELETE /api/film/movies/1
   def destroy
     @movie.destroy
   end

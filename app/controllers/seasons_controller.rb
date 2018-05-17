@@ -4,7 +4,11 @@ class SeasonsController < ApplicationController
 
   # GET /seasons
   def index
-    @seasons = Season.all
+    @seasons = if params[:show_id].present?
+                 Season.where(show_id: params[:show_id])
+               else
+                 Season.all
+               end
     render json: { seasons: @seasons }
   end
 
@@ -19,7 +23,7 @@ class SeasonsController < ApplicationController
     @season = Season.new(season_params)
 
     if @season.save
-      render json: @season, status: :created, location: @season
+      render json: { seasons: @season }, status: :created, location: @season
     else
       render json: @season.errors, status: :unprocessable_entity
     end
@@ -30,7 +34,7 @@ class SeasonsController < ApplicationController
   def update
 
     if @season.update(season_params)
-      render json: @season
+      render json: { seasons: @season }
     else
       render json: @season.errors, status: :unprocessable_entity
     end
@@ -47,7 +51,6 @@ class SeasonsController < ApplicationController
   # Use callbacks to share common setup or constraints between actions.
   def set_season
     @season = Season.find(params[:id])
-    #@season.links = { episodes: }
   end
 
   # Only allow a trusted parameter "white list" through.

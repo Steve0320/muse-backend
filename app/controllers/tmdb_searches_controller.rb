@@ -7,8 +7,7 @@ class TmdbSearchesController < ApplicationController
 
   # GET /tv/search
   def tv_search
-    #render json: search('tv', search_params)
-    render json: Show.tmdb_lookup(19885)
+    render json: search('tv', search_params)
   end
 
   private

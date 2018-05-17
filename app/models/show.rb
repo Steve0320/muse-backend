@@ -15,25 +15,23 @@ class Show < ApplicationRecord
     'https://image.tmdb.org/t/p/w500' + read_attribute(:backdrop_path)
   end
 
+  def links
+    { seasons: Rails.application.routes.url_helpers.show_seasons_path(self) }
+  end
+
   # Find a tv show (with seasons and episodes) in TMDb
   # Number of api requests = 1 + ceil(seasons/20)
-  # Should run in O(n) where n = total number of episodes
+  # Should run in O(m + n) where m = total number of episodes
+  # and n = total number of seasons
   def self.tmdb_lookup(id)
 
-    # Load show info from TMDb
-    response = Faraday.get do |req|
-      req.url "https://api.themoviedb.org/3/tv/#{id}"
-      req.headers['Content-Type'] = 'application/json;charset=utf-8'
-      req.params['api_key'] = '7487a1aeaf17758c1b3f2d52f0c5d813'
-    end
-
-    show = JSON.parse(response.body)
+    # Load basic show info
+    show = get_tmdb(id)
     show_obj = Show.unmarshal_tmdb(show)
 
     # Use append_to_response to reduce API queries
     season_appends = []
 
-    # Figure out append links
     show['seasons'].each do |season|
       season_number = season['season_number']
       season_appends << "season/#{season_number}"
@@ -42,14 +40,7 @@ class Show < ApplicationRecord
     # Respect TMDb's limit of 20 appends per request
     season_appends.each_slice(20) do |batch|
 
-      response = Faraday.get do |req|
-        req.url "https://api.themoviedb.org/3/tv/#{id}"
-        req.headers['Content-Type'] = 'application/json;charset=utf-8'
-        req.params['api_key'] = '7487a1aeaf17758c1b3f2d52f0c5d813'
-        req.params['append_to_response'] = batch.join(',')
-      end
-
-      json = JSON.parse(response.body)
+      json = get_tmdb(id, batch)
 
       batch.each do |season_key|
 
@@ -65,6 +56,19 @@ class Show < ApplicationRecord
     end
 
     return show_obj
+
+  end
+
+  def self.get_tmdb(id, appends = nil)
+
+    response = Faraday.get do |req|
+      req.url "https://api.themoviedb.org/3/tv/#{id}"
+      req.headers['Content-Type'] = 'application/json;charset=utf-8'
+      req.params['api_key'] = Rails.application.secrets[:TMDB_KEY]
+      req.params['append_to_response'] = appends.join(',') if appends.present?
+    end
+
+    return JSON.parse(response.body)
 
   end
 
