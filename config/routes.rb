@@ -6,14 +6,15 @@ Rails.application.routes.draw do
     # Movie routes
     scope :film do
       resources :movies
-      #get 'search', to: 'movies#search', as: 'movie_search'
       get 'search', to: 'tmdb_searches#movie_search', as: 'movie_search'
     end
 
     # TV routes
     scope :tv do
       resources :shows do
-        resources :seasons
+        resources :seasons do
+          resources :episodes
+        end
       end
       resources :seasons
       resources :episodes

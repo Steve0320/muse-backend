@@ -9,12 +9,12 @@ class SeasonsController < ApplicationController
                else
                  Season.all
                end
-    render json: { seasons: @seasons }
+    render json: { seasons: @seasons }, methods: [:links]
   end
 
   # GET /seasons/1
   def show
-    render json: { seasons: @season }
+    render json: { seasons: @season }, methods: [:links]
   end
 
   # POST /seasons
@@ -23,7 +23,7 @@ class SeasonsController < ApplicationController
     @season = Season.new(season_params)
 
     if @season.save
-      render json: { seasons: @season }, status: :created, location: @season
+      render json: { seasons: @season }, status: :created, location: @season, methods: [:links]
     else
       render json: @season.errors, status: :unprocessable_entity
     end
@@ -34,7 +34,7 @@ class SeasonsController < ApplicationController
   def update
 
     if @season.update(season_params)
-      render json: { seasons: @season }
+      render json: { seasons: @season }, methods: [:links]
     else
       render json: @season.errors, status: :unprocessable_entity
     end
@@ -55,7 +55,8 @@ class SeasonsController < ApplicationController
 
   # Only allow a trusted parameter "white list" through.
   def season_params
-    params.fetch(:season, {})
+    params.require(:season).permit(:release_date, :title, :description,
+                                   :poster_path, :number)
   end
 
 end

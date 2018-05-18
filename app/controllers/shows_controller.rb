@@ -5,7 +5,7 @@ class ShowsController < ApplicationController
   # GET /api/tv/shows
   def index
     @shows = Show.all
-    render json: { shows: @shows }
+    render json: { shows: @shows }, methods: [:links]
   end
 
   # GET /api/tv/shows/1

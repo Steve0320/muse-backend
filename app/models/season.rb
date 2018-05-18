@@ -5,6 +5,10 @@ class Season < ApplicationRecord
   belongs_to :show
   has_many :episodes, dependent: :destroy
 
+  def links
+    { episodes: Rails.application.routes.url_helpers.show_season_episodes_path(show_id, self) }
+  end
+
   def self.unmarshal_tmdb(json)
 
     return Season.new(
